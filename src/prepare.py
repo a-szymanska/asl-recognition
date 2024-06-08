@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def save_data(root_folder,file_path,no_pixels=32,no_items=3000):
+def save_data(root_folder,file_path_train,file_path_test,no_pixels=32,no_items=3000):
     images = []
     labels = []
     for letter_folder in os.listdir(root_folder):
@@ -29,15 +29,17 @@ def save_data(root_folder,file_path,no_pixels=32,no_items=3000):
     
     images = np.array(images)
     labels = np.array(labels)
-    np.savez(file_path, images=images, labels=labels)
+    X_train,X_test,Y_train,Y_test = split_data(images,labels,test_size=0.25)
+    np.savez(file_path_train, X=X_train, Y=Y_train)
+    np.savez(file_path_test, X=X_test, Y=Y_test)
     print("saved!")
 
 
 
 def read_data(path):
     data = np.load(path)
-    images = data['images']
-    labels = data['labels']
+    images = data['X']
+    labels = data['Y']
     data.close()
     return images,labels
 
@@ -55,11 +57,10 @@ def split_data(X, y, test_size=0.5, train_size=1):
     for i in range(n_classes):
         mask = (y[:] == i)
         classes.append([X[mask], y[mask]])
-
-    k = int(len(X) * test_size / n_classes)
+    k = (X.shape[0] * test_size // n_classes)
     X_train, X_test, Y_train, Y_test = [], [], [], []
     for i, cls in enumerate(classes):
-        if k > len(cls):
+        if k > len(cls[0]):
             print(f'Too few observations from class {i}')
             return X_train, X_test, Y_train, Y_test
 
@@ -99,9 +100,12 @@ if __name__ == '__main__':
     #             data_reshaped = data.reshape(data.shape[0], -1)
     #             for row in data:
     #                 writer.writerow(row)
-    data_file=os.path.join(project_dir,'data/train3.npz')
+    train_data_file=os.path.join(project_dir,'data/train3.npz')
+    test_data_file=os.path.join(project_dir,'data/test3.npz')
     images_folder=os.path.join(project_dir, 'data/archive/asl_alphabet_train/asl_alphabet_train/')
-    #save_data(images_folder,data_file,no_pixels=200,no_items=200)
-    X,Y=read_data(data_file)
-    show_image(X[213],Y[213])
+    #save_data(images_folder,file_path_train=train_data_file,file_path_test=test_data_file,no_pixels=64)
+    X_train,Y_train=read_data(train_data_file)
+    X_test,Y_test=read_data(test_data_file)
+    show_image(X_train[0],Y_train[0])
+    show_image(X_test[0],Y_test[0])
     # X_train, X_test, Y_train, Y_test = split_data(X, y)
