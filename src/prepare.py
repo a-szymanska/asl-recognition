@@ -1,28 +1,51 @@
 import random
 import numpy as np
 import csv
+import cv2
 from PIL import Image
 from numpy import genfromtxt
 from sklearn.model_selection import train_test_split
 import os
+import matplotlib.pyplot as plt
+
+project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+def save_data(root_folder,file_path,no_pixels=32):
+    images = []
+    labels = []
+    for letter_folder in os.listdir(root_folder):
+        letter_folder_path = os.path.join(root_folder, letter_folder)
+        if os.path.isdir(letter_folder_path):
+            if letter_folder.isupper():
+                label = ord(letter_folder) - ord('A')
+                for image_file in os.listdir(letter_folder_path):
+                    image_path = os.path.join(letter_folder_path, image_file)
+                    if os.path.isfile(image_path):
+                        image = cv2.imread(image_path)
+                        image = cv2.resize(image, (no_pixels, no_pixels))
+                        images.append(image)
+                        labels.append(label)
+        print(f'saved {letter_folder}')
+    
+    images = np.array(images)
+    labels = np.array(labels)
+    np.savez(file_path, images=images, labels=labels)
+    print("saved!")
 
 
-def get_data(path, label):
-    print('prepare', path)
-    image = Image.open(path)
-    image = image.convert("RGB")
-    pixels = np.array(image.getdata())
-    dataset = np.array([[pix[0], pix[1], pix[2], i % 200, i // 200] for i, pix in enumerate(pixels)])
-    dataset_labeled = np.append(dataset, np.array([[label, label, label, label, label]]), axis=0)  # to be discussed
-    return dataset_labeled
 
+def read_data(path):
+    data = np.load(os.path.join('data/train3.npz'))
+    images = data['images']
+    labels = data['labels']
+    data.close()
+    return images,labels
 
-def read_data(path='../data/test.csv'):
-    dataset = genfromtxt(path, delimiter=',')
-    n_files = dataset.shape[0] / 40001
-    dataset = dataset.reshape((n_files, 40001, 5))
-    X, y = dataset[:, :-1, :], dataset[:, -1, 0]
-    return X, y
+def show_image(image,label):
+    plt.imshow(image)
+    plt.title(f'Label: {label}')
+    plt.axis('off')  # Hide axes
+    plt.show()
 
 
 # train_size < 1 may be used for learning curve
@@ -76,8 +99,9 @@ if __name__ == '__main__':
     #             data_reshaped = data.reshape(data.shape[0], -1)
     #             for row in data:
     #                 writer.writerow(row)
-
-    X, y = read_data()
-    print(X.shape, y.shape)
-
+    data_file=os.path.join(project_dir,'data/train3.csv')
+    images_folder=os.path.join(project_dir, 'data/archive/asl_alphabet_train/asl_alphabet_train/')
+    #save_data(images_folder,data_file)
+    X,Y=read_data(data_file)
+    show_image(X[0],Y[0])
     # X_train, X_test, Y_train, Y_test = split_data(X, y)
