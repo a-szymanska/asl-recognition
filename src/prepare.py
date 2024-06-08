@@ -17,8 +17,9 @@ def get_data(path, label):
     return dataset_labeled
 
 
-def read_data(n_files, path='../data/test.csv'):
+def read_data(path='../data/test.csv'):
     dataset = genfromtxt(path, delimiter=',')
+    n_files = dataset.shape[0] / 40001
     dataset = dataset.reshape((n_files, 40001, 5))
     X, y = dataset[:, :-1, :], dataset[:, -1, 0]
     return X, y
@@ -59,22 +60,24 @@ def split_data(X, y, test_size=0.5, train_size=1):
 if __name__ == '__main__':
 
     # Prepare and save data
-    # directory = os.fsencode('../data/asl_alphabet_test')
-    # with open('../data/test.csv', 'w', newline='\n') as file:
-    #     writer = csv.writer(file)
-    #     for file in os.listdir(directory):
-    #         filename = os.fsdecode(file)
-    #         if not filename.endswith(".jpg"):
-    #             continue
-    #         if filename[0].isupper():
-    #             data = get_data(f'../data/asl_alphabet_test/{filename}', ord(filename[0]) - ord('A'))
-    #         elif filename.startswith('space'):
-    #             data = get_data(f'../data/asl_alphabet_test/{filename}', 26)
-    #         data_reshaped = data.reshape(data.shape[0], -1)
-    #         for row in data:
-    #             writer.writerow(row)
+    # alph = [chr(i) for i in range(ord('A'), ord('Z') + 1)] + ['space']
+    # for c in alph:
+    #     directory = os.fsencode('../data/asl_alphabet_test/{c}')
+    #     with open('../data/train.csv', 'w', newline='\n') as file:
+    #         writer = csv.writer(file)
+    #         for file in os.listdir(directory):
+    #             filename = os.fsdecode(file)
+    #             if not filename.endswith(".jpg"):
+    #                 continue
+    #             if filename[0].isupper():
+    #                 data = get_data(f'../data/asl_alphabet_test/{filename}', ord(filename[0]) - ord('A'))
+    #             elif filename.startswith('space'):
+    #                 data = get_data(f'../data/asl_alphabet_test/{filename}', 26)
+    #             data_reshaped = data.reshape(data.shape[0], -1)
+    #             for row in data:
+    #                 writer.writerow(row)
 
-    X, y = read_data(27)
+    X, y = read_data()
     print(X.shape, y.shape)
 
     # X_train, X_test, Y_train, Y_test = split_data(X, y)
