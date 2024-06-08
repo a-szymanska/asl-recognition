@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def save_data(root_folder,file_path,no_pixels=32):
+def save_data(root_folder,file_path,no_pixels=32,no_items=3000):
     images = []
     labels = []
     for letter_folder in os.listdir(root_folder):
@@ -18,7 +18,7 @@ def save_data(root_folder,file_path,no_pixels=32):
         if os.path.isdir(letter_folder_path):
             if letter_folder.isupper():
                 label = ord(letter_folder) - ord('A')
-                for image_file in os.listdir(letter_folder_path):
+                for image_file in os.listdir(letter_folder_path)[:no_items]:
                     image_path = os.path.join(letter_folder_path, image_file)
                     if os.path.isfile(image_path):
                         image = cv2.imread(image_path)
@@ -35,7 +35,7 @@ def save_data(root_folder,file_path,no_pixels=32):
 
 
 def read_data(path):
-    data = np.load(os.path.join('data/train3.npz'))
+    data = np.load(path)
     images = data['images']
     labels = data['labels']
     data.close()
@@ -99,9 +99,9 @@ if __name__ == '__main__':
     #             data_reshaped = data.reshape(data.shape[0], -1)
     #             for row in data:
     #                 writer.writerow(row)
-    data_file=os.path.join(project_dir,'data/train3.csv')
+    data_file=os.path.join(project_dir,'data/train3.npz')
     images_folder=os.path.join(project_dir, 'data/archive/asl_alphabet_train/asl_alphabet_train/')
-    #save_data(images_folder,data_file)
+    #save_data(images_folder,data_file,no_pixels=200,no_items=200)
     X,Y=read_data(data_file)
-    show_image(X[0],Y[0])
+    show_image(X[213],Y[213])
     # X_train, X_test, Y_train, Y_test = split_data(X, y)
