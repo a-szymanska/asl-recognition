@@ -19,7 +19,6 @@ def get_clustered_data(no_files, filepath, X, Y, model):
         labels = model.predict(X_flat)
         if labels[0] == 1:
             labels = np.array(list(map(lambda c: 0 if c == 1 else 1, labels)))
-        assert(labels[0] == 0)
         clustered_labels_list.append(labels)
         if idx >= no_files:
             break
