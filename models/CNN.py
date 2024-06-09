@@ -1,7 +1,9 @@
 import numpy as np
-from model import *
+from scipy.signal import correlate2d
 
-class CNN(ClassificationModel):
+
+
+class CNN:
     def relu(x):
         return np.maximum(0,x)
     class Filter:
@@ -20,10 +22,11 @@ class CNN(ClassificationModel):
             pass
     
     class ConvolutionLayer(Layer):
-        def __init__(self,filters_shape,no_filters):
+        def __init__(self,filters_shape,no_filters,activation="relu"):
             self.filters_shape=filters_shape
             self.filters=[CNN.Filter(filters_shape) for _ in range(no_filters)]
             self.no_filters=no_filters
+            self.activation=getattr(CNN,activation)
 
 
         def forward(self,input):
@@ -35,14 +38,11 @@ class CNN(ClassificationModel):
             # Initialize result array
             res = np.zeros((x_out, y_out, self.no_filters))
 
-            for i in range(x_out):
-                for j in range(y_out):
-                    for channel in range(c):
-                        input_patch = input[i:i+a, j:j+b, channel]
-                        for k, f in enumerate(self.filters):
-                            res[i, j, k] = f.apply(input_patch)
-
-            return res    
+            
+            for k, f in enumerate(self.filters):
+                for channel in range(c):
+                    res[:, :, k] = correlate2d(input[:,:,channel], f.F, mode="valid")
+            return self.activation(res)    
 
         def backwards(self, input):
             pass
