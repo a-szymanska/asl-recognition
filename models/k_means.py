@@ -2,8 +2,6 @@ import numpy as np
 import random
 
 
-# TODO Make this model better
-
 class KMeans:
     def __init__(self, n_clusters=5, n_iterations=100000):  # n_iterations - max number of iterations
         self.n_clusters = n_clusters

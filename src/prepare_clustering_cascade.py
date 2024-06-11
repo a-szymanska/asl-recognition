@@ -4,7 +4,7 @@ import cv2
 from sklearn.cluster import KMeans
 import os
 
-hand_data = cv2.CascadeClassifier('../data/hand.xml')
+hand_data = cv2.CascadeClassifier('data/hand.xml')
 
 
 def get_clustered_data(no_files, filepath, X, Y, model):

@@ -32,7 +32,7 @@ class ClassificationModel(BaseEstimator):
         plt.figure(figsize=(10, 7))
         letters = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
         sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=letters, yticklabels=letters)
-        plt.xlabel('Przewidywanie')
-        plt.ylabel('Klasa')
-        plt.title('Macierz pomyłek')
+        plt.xlabel('Prediction')
+        plt.ylabel('True label')
+        plt.title('Confusion Matrix')
         plt.show()

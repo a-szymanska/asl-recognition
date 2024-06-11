@@ -5,7 +5,7 @@ from collections import Counter, deque
 
 
 class Node:
-    def __init__(self, data=None, children=None, leaf=False, split_attr=None, split_val=None, class_pred=None):
+    def __init__(self, data=None, children=None, leaf=False, split_attr=None, split_val=None, class_pred=None, no_classes=27):
         if children is None:
             children = [None, None]
         self.data = data
@@ -14,6 +14,7 @@ class Node:
         self.split_attr = split_attr
         self.split_val = split_val
         self.class_pred = class_pred
+        self.no_classes = no_classes
 
 
 class DecisionTree(ClassificationModel):
@@ -38,10 +39,9 @@ class DecisionTree(ClassificationModel):
         entropy = 1 - max(value_counts) / n
         return entropy
 
-    @staticmethod
-    def get_pred_class(Y):
+    def get_pred_class(self, Y):
         if len(Y) == 0:
-            return random.choice([0, 1])
+            return random.choice(list(range(self.no_classes)))
         counts = Counter(Y)
         class_pred = counts[1] / (counts[0] + counts[1])  # max(counts, key=counts.get)
         return class_pred
