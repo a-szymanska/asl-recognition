@@ -6,7 +6,7 @@ from sklearn.cluster import KMeans
 
 def get_clustered_data(no_files, filepath, X, Y, model):
     clustered_labels_list = []
-    for idx, x in enumerate(X):
+    for idx, x in enumerate(X[:no_files]):
         print(f'{idx} out of {no_files}')
         X_flat = []
         for i, row in enumerate(x):
@@ -20,8 +20,6 @@ def get_clustered_data(no_files, filepath, X, Y, model):
         if labels[0] == 1:
             labels = np.array(list(map(lambda c: 0 if c == 1 else 1, labels)))
         clustered_labels_list.append(labels)
-        if idx >= no_files:
-            break
 
     X_clustered = np.array(clustered_labels_list)
     file = os.path.join(project_dir, filepath)

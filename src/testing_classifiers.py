@@ -1,13 +1,9 @@
-from prepare import *
+from models.decision_tree import DecisionTree
+from models.random_forest import RandomForest
+from models.k_neighbours import KNeighbours
 from prepare_clustering import *
-import numpy as np
-import cv2
 import os
 from sklearn.preprocessing import StandardScaler
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score
 
 if __name__ == '__main__':
     project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,34 +16,19 @@ if __name__ == '__main__':
     print('Shape of train dataset:', X_train.shape, Y_train.shape)
     print('Shape of test dataset:', X_test.shape, Y_test.shape)
 
-    # Standardize the data
+    # Standardize the data - maybe not necessary?
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    # Initialize models
     models = {
-        "Decision Tree": DecisionTreeClassifier(),
-        "Random Forest": RandomForestClassifier(),
-        "K-NN": KNeighborsClassifier(),
-        "AdaBoost": AdaBoostClassifier()
+        "Decision Tree": DecisionTree(),
+        "Random Forest": RandomForest(),
+        "K-NN": KNeighbours()
     }
-
-    # Train and evaluate models
-    results = {}
 
     for model_name, model in models.items():
         print(model_name)
         model.fit(X_train_scaled, Y_train)
         Y_pred = model.predict(X_test_scaled)
-
-        accuracy = accuracy_score(Y_test, Y_pred)
-        # precision = precision_score(Y_test, Y_pred, average='weighted')
-        # recall = recall_score(Y_test, Y_pred, average='weighted')
-        # f1 = f1_score(Y_test, Y_pred, average='weighted')
-        # conf_matrix = confusion_matrix(Y_test, Y_pred)
-        # class_report = classification_report(Y_test, Y_pred)
-
-        print(model_name)
-        print("Accuracy", accuracy, '\n')
-
+        model.score(Y_test, Y_pred)

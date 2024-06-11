@@ -18,7 +18,6 @@ class KMeans:
             for centroid in self.centroids:
                 distances += self.euclidean_dist(centroid, X)
             closeness = distances / np.sum(distances)  # Normalize the distances
-            # new_centroid_idx = np.random.choice(range(n), size=1, p=closeness)[0]
             new_centroid_idx = np.argmax(np.random.multinomial(1, closeness))
 
             self.centroids.append(X[new_centroid_idx])

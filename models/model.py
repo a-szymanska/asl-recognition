@@ -1,10 +1,12 @@
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.base import BaseEstimator
-from sklearn import metrics
+from sklearn.metrics import accuracy_score, precision_score, confusion_matrix
 
 
 class ClassificationModel(BaseEstimator):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         pass
 
     def fit(self, X, y):
@@ -18,18 +20,19 @@ class ClassificationModel(BaseEstimator):
         y = np.array(y)
         y_pred = np.array(y_pred)
 
-        accuracy = metrics.accuracy_score(y, y_pred)
-        precision_macro = metrics.precision_score(y, y_pred, average='macro', zero_division=0)
-        precision_micro = metrics.precision_score(y, y_pred, average='micro', zero_division=0)
-        precision_weighted = metrics.precision_score(y, y_pred, average='weighted', zero_division=0)
-        mcc = metrics.matthews_corrcoef(y, y_pred)  # TODO check if can be used for multiclass problems
+        accuracy = accuracy_score(y, y_pred)
+        precision_macro = precision_score(y, y_pred, average='macro')
+        precision_micro = precision_score(y, y_pred, average='micro')
+        conf_matrix = confusion_matrix(y, y_pred)
 
-        confusion_matrix = metrics.confusion_matrix(y, y_pred)  # May be nicely plotted
+        print("Accuracy", accuracy)
+        print("Macro precision", precision_macro)
+        print("Micro precision", precision_micro, '\n')
 
-        return {
-            'accuracy': accuracy,
-            'precision_macro': precision_macro,
-            'precision_micro': precision_micro,
-            'precision_weighted': precision_weighted,
-            'mcc': mcc
-        }
+        plt.figure(figsize=(10, 7))
+        letters = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
+        sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=letters, yticklabels=letters)
+        plt.xlabel('Przewidywanie')
+        plt.ylabel('Klasa')
+        plt.title('Macierz pomyłek')
+        plt.show()
