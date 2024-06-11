@@ -44,7 +44,7 @@ class CNN:
                     res[:, :, k] = correlate2d(input[:,:,channel], f.F, mode="valid")
             return self.activation(res)    
 
-        def backwards(self, input):
+        def backwards(self, in_gradient):
             pass
     class MaxPoolLayer(Layer):
         def __init__(self,pool_shape):
@@ -59,7 +59,7 @@ class CNN:
             input_reshaped = input_cropped.reshape(x_pooled, a, y_pooled, b, c)
             res = input_reshaped.max(axis=(1, 3))
             return res
-        def backwards(self,input):
+        def backwards(self,in_gradient):
             pass
 
     class DenseLayer(Layer):
@@ -79,32 +79,41 @@ class CNN:
                 self._initialize_weights(input.shape[0],self.output_size)
             z=input@self.weights+self.bias
             return self.activation(z)
-        def backwards(self,input):
+        def backwards(self,in_gradient):
             pass
             
 
 
 
     def __init__(self):
-        self.layes=[]
+        self.layers=[]
     def add_layer(self,L):
-        self.layes.append(L)
-    def train_one_example(self,x,y):
-        classified=np.argmax(self.predict(x))
-        return(classified==y)
+        self.layers.append(L)
     def train_batch(self,X,Y):
-        res=0
+        res=np.zeros_like(Y)
         for i,x in enumerate(X):
-            res+=self.train_one_example(x,Y[i])
-        print(res/X.shape[0])
+            Y_pred=self.predict(x)
+            Y_pred/=np.sum(Y_pred)
+            Y_true=np.zeros(26)
+            Y_true[Y[i]]=1
+            loss=-np.sum(Y_true * np.log(Y_pred))/Y.shape[0]
+            gradient=-Y_true/(Y_pred)/Y.shape[0]
+            self.backprop(gradient)
+            print(gradient)
+        
+        
 
 
     def fit(self,X,Y):
         for i in range(0,X.shape[0]-16,16):
             self.train_batch(X[i:i+16],Y[i:i+16])
 
-    
+    def backprop(self,gradient):
+        for L in reversed(self.layers):
+            gradient=L.backwards(gradient)
+        
+
     def predict(self,x):
-        for L in self.layes:
+        for L in self.layers:
             x=L.forward(x)
         return x
