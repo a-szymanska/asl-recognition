@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <!--
 Author: Balaje K
 Repository: Balaje/OpenCV
@@ -5,7 +6,6 @@ URL: https://github.com/Balaje/OpenCV/blob/master/haarcascades/hand.xml
 Accessed on: 2024-06-08
 -->
 
-<?xml version="1.0"?>
 <opencv_storage>
 <A_gest type_id="opencv-haar-classifier">
   <size>
