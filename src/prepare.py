@@ -1,9 +1,6 @@
 import random
 import numpy as np
-import csv
 import cv2
-from PIL import Image
-from numpy import genfromtxt
 from sklearn.model_selection import train_test_split
 import os
 import matplotlib.pyplot as plt
@@ -51,7 +48,6 @@ def show_image(image, label):
     plt.show()
 
 
-# train_size < 1 may be used for learning curve
 def split_data(X, y, test_size=0.5, train_size=1):
     n_classes = int(np.max(y)) + 1
     classes = []
