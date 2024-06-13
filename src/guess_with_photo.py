@@ -12,10 +12,9 @@ cap = cv2.VideoCapture(0)
 
 def get_labels(img, no_pixels=64):
     kmeans = KMeans(n_clusters=2, n_init='auto')
-    labels_list = []
-    image_list = []
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    show_image(img, '?')
     img = cv2.resize(img, (no_pixels, no_pixels))
-    image_list.append(img)
     X_flat = []
     for i, row in enumerate(img):
         for j, col in enumerate(row):
@@ -26,10 +25,8 @@ def get_labels(img, no_pixels=64):
     labels = kmeans.predict(X_flat)
     if labels[0] == 1:
         labels = np.array(list(map(lambda c: 0 if c == 1 else 1, labels)))
-    labels_list.append(labels)
-    labels_list = np.array(StandardScaler().fit_transform(labels_list))
-    print(labels)
-    return image_list, labels_list
+    labels = [labels]
+    return img, labels
 
 
 if __name__ == '__main__':
@@ -52,8 +49,7 @@ if __name__ == '__main__':
                 break
 
         print('frame:', frame.shape)
-        images, clustered_images = get_labels(frame)
-        labels = model.predict(clustered_images)
+        image, clustered_image = get_labels(frame)
+        labels = model.predict(clustered_image)
         print(labels)
-        for img, lbl in zip(images, labels):
-            show_image(img, chr(lbl + ord('A')))
+        show_image(image, chr(labels[0] + ord('A')))
