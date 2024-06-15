@@ -9,10 +9,10 @@ if __name__ == '__main__':
     train_data_file = os.path.join(project_dir, 'data/train3.npz')
     test_data_file = os.path.join(project_dir, 'data/test3.npz')
 
-    model = tf.keras.models.load_model(os.path.join(project_dir, 'trained_models/cnn_TFnew_dataBIG.keras'))
+    model = tf.keras.models.load_model(os.path.join(project_dir, 'trained_models/cnn_TF.keras'))
     X_test, Y_test = read_data(test_data_file)
 
-    y_pred = model.predict(np.array([X_test[0]]))
+    y_pred = np.argmax(model.predict(X_test),axis=1)
     y_pred = np.array(y_pred)
 
     accuracy = accuracy_score(Y_test, y_pred)

@@ -26,7 +26,7 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 
-history = model.fit(X_train, Y_train,epochs=2)
+history = model.fit(X_train, Y_train,epochs=10)
 
 
 test_loss, test_acc = model.evaluate(X_test, Y_test, verbose=2)
