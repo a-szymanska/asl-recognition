@@ -27,8 +27,7 @@ class CNNkeras(ClassificationModel):
     def fit(self, X, y, epochs):
         self.history = self.model.fit(X, y, epochs=epochs)
 
-        plt.plot(self.history.history['accuracy'], label='Dokładność')
-        plt.plot(self.history.history['val_accuracy'], label='Dokładnosć walidacji')
+        plt.plot(self.history.history['accuracy'])
         plt.xlabel('Epoka')
         plt.ylabel('Dokładność')
         plt.ylim([0.5, 1])
