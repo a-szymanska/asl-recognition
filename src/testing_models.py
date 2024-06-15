@@ -1,7 +1,7 @@
 from models.decision_tree import DecisionTree
 from models.random_forest import RandomForest
 from models.k_neighbours import KNeighbours
-from models.CNN import CNN
+from models.cnn import CNN
 from prepare_clustering import *
 import os
 from sklearn.preprocessing import StandardScaler
